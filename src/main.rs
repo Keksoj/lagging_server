@@ -45,7 +45,7 @@ async fn manual_hello() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let args = Args::parse();
-    let local_ip = "127.0.0.1";
+    let local_ip = "0.0.0.0";
     // let rustls_config = load_rustls_config();
 
     println!(
