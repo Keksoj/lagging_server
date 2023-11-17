@@ -40,22 +40,10 @@ _Et cætera_
 
 ## Request it with curl
 
-```bash
-curl http://localhost:1054/api
-```
+| curl command                                                    | outcome                    |
+| :-------------------------------------------------------------- | :------------------------- |
+| `curl http://localhost:1054/api`                                | Should reply "Hey there!"  |
+| `curl http://localhost:1054`                                    | should hang for 10 seconds |
+| `curl -X POST -d "Do you here me?"  http://localhost:1054/echo` | echoes back to you         |
 
-Should reply "Hey there!"
-
-```bash
-curl http://localhost:1054
-```
-
-should hand for 10 seconds
-
-and if you POST on route `/echo`...
-
-```
-curl -X POST -d "Do you here me?"  http://localhost:1054/echo
-```
-
-try it!
+Try it!
