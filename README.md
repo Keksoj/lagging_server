@@ -40,10 +40,11 @@ _Et cætera_
 
 ## Request it with curl
 
-| curl command                                                    | outcome                    |
-| :-------------------------------------------------------------- | :------------------------- |
-| `curl http://localhost:1054/api`                                | Should reply "Hey there!"  |
-| `curl http://localhost:1054`                                    | should hang for 10 seconds |
-| `curl -X POST -d "Do you here me?"  http://localhost:1054/echo` | echoes back to you         |
+| curl command                                                    | outcome                                         |
+| :-------------------------------------------------------------- | :---------------------------------------------- |
+| `curl http://localhost:1054/api`                                | replies "Hey there!"                            |
+| `curl http://localhost:1054/latency`                            | replies after a latency period, tells about it  |
+| `curl http://localhost:1054`                                    | should hang for 10 seconds                      |
+| `curl -X POST -d "Do you here me?"  http://localhost:1054/echo` | echoes back to you                              |
 
 Try it!

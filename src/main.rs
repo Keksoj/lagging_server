@@ -1,7 +1,7 @@
 use std::{fs::File, io::BufReader, thread::sleep, time::Duration};
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use clap::{ArgAction, Parser};
+use actix_web::{get, post, App, HttpResponse, HttpServer, Responder};
+use clap::Parser;
 use rand::Rng;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
@@ -32,14 +32,22 @@ async fn echo(req_body: String) -> impl Responder {
     HttpResponse::Ok().body(req_body)
 }
 
-async fn manual_hello() -> impl Responder {
-    println!("Receive a GET request on the /api route");
+#[get("/latency")]
+async fn latency() -> impl Responder {
+    println!("Receive a GET request on the /latency route");
     let mut rng = rand::thread_rng();
     let mut latency: f64 = rng.gen();
     latency = latency * 100.0;
     sleep(Duration::from_millis(latency as u64));
 
-    HttpResponse::Ok().body("Hey there!")
+    HttpResponse::Ok().body(format!("Hi, I come with {} milliseconds latency", latency))
+}
+
+#[get("/api")]
+async fn api() -> impl Responder {
+    println!("Receive a GET request on the /api route");
+
+    HttpResponse::Ok().body("Hey There!")
 }
 
 #[actix_web::main]
@@ -57,7 +65,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(hello)
             .service(echo)
-            .route("/api", web::get().to(manual_hello))
+            .service(latency)
+            .service(api)
     })
     .workers(4)
     .bind((local_ip, args.port))?
