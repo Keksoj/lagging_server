@@ -3,8 +3,8 @@ use std::{fs::File, io::BufReader, thread::sleep, time::Duration};
 use actix_web::{get, post, App, HttpResponse, HttpServer, Responder};
 use clap::Parser;
 use rand::Rng;
-use rustls::{Certificate, PrivateKey, ServerConfig};
-use rustls_pemfile::{certs, pkcs8_private_keys};
+use rustls::ServerConfig;
+use rustls_pemfile::{certs, private_key};
 
 #[derive(Parser, PartialEq, Eq, Clone, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -77,9 +77,7 @@ async fn main() -> std::io::Result<()> {
 
 pub fn load_rustls_config() -> ServerConfig {
     // init server config builder with safe defaults
-    let config = ServerConfig::builder()
-        .with_safe_defaults()
-        .with_no_client_auth();
+    let config = ServerConfig::builder().with_no_client_auth();
 
     // load TLS key/cert files
     let cert_file = &mut BufReader::new(File::open("cert/cert.pem").unwrap());
@@ -87,21 +85,13 @@ pub fn load_rustls_config() -> ServerConfig {
 
     // convert files to key/cert objects
     let cert_chain = certs(cert_file)
-        .unwrap()
         .into_iter()
-        .map(Certificate)
-        .collect();
-    let mut keys: Vec<PrivateKey> = pkcs8_private_keys(key_file)
-        .unwrap()
-        .into_iter()
-        .map(PrivateKey)
+        .map(|c| c.expect("could not create cert from file"))
         .collect();
 
-    // exit if no keys could be parsed
-    if keys.is_empty() {
-        eprintln!("Could not locate PKCS 8 private keys.");
-        std::process::exit(1);
-    }
+    let private_key = private_key(key_file)
+        .expect("could not create key from file")
+        .unwrap_or_else(|| panic!("no key in file"));
 
-    config.with_single_cert(cert_chain, keys.remove(0)).unwrap()
+    config.with_single_cert(cert_chain, private_key).unwrap()
 }

@@ -45,6 +45,6 @@ _Et cætera_
 | `curl http://localhost:1054/api`                                | replies "Hey there!"                            |
 | `curl http://localhost:1054/latency`                            | replies after a latency period, tells about it  |
 | `curl http://localhost:1054`                                    | should hang for 10 seconds                      |
-| `curl -X POST -d "Do you here me?"  http://localhost:1054/echo` | echoes back to you                              |
+| `curl -X POST -d "Do you hear me?"  http://localhost:1054/echo` | echoes back to you                              |
 
 Try it!
